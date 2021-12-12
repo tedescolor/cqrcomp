@@ -121,8 +121,8 @@ cqrcomp = function(df1, #first dataset as dataframe
 ){
   if(is.na(taus)){
     max.quantile = min(
-      sum(df1[,delta.name])/nrow(df1),
-      sum(df2[,delta.name])/nrow(df2)
+      sum(df1[,c(delta.name)])/nrow(df1),
+      sum(df2[,c(delta.name)])/nrow(df2)
       )
     if(max.quantile<0.1){
       stop("Censor to high, impossible to continue. Try to specify taus.")
