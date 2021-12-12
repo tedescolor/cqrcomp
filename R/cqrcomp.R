@@ -241,7 +241,8 @@ cqrcomp = function(df1, #first dataset as dataframe
     TstatTaus = c(taus, taus[length(taus)] + taus[length(taus)] -  taus[length(taus)-1]  )
   }
   
-  if(test.type == "bonf"){
+  result = list()
+  if( "bonf" %in% test.type ){
     
     pvalues = c()
     for(i in 1:(length(cov.names)+1)){
@@ -259,10 +260,17 @@ cqrcomp = function(df1, #first dataset as dataframe
       
     }
     pvalue = min(pvalues)
-  }else{
-    pvalue = 1 - sum( apply( (array(A1-A2, dim = dim(A1)) - array(rep((t1-t2),R),dim = c(dim(t1),R) )) , length(dim(A1)),Tstat, taus = TstatTaus,selectedNorm = test.type ) < Tstat(t1-t2,taus = TstatTaus, selectedNorm = test.type ) ) / R
+    result = c(result, list(bonf = pvalue))
   }
-  return(pvalue)
+  if("norm2" %in% test.type){
+    pvalue = 1 - sum( apply( (array(A1-A2, dim = dim(A1)) - array(rep((t1-t2),R),dim = c(dim(t1),R) )) , length(dim(A1)),Tstat, taus = TstatTaus,selectedNorm = "norm2" ) < Tstat(t1-t2,taus = TstatTaus, selectedNorm = "norm2" ) ) / R
+    result = c(result, list(norm2 = pvalue))
+  }
+  if("normInf" %in% test.type){
+    pvalue = 1 - sum( apply( (array(A1-A2, dim = dim(A1)) - array(rep((t1-t2),R),dim = c(dim(t1),R) )) , length(dim(A1)),Tstat, taus = TstatTaus,selectedNorm = "normInf" ) < Tstat(t1-t2,taus = TstatTaus, selectedNorm = "normInf" ) ) / R
+    result = c(result, list( normInf = pvalue))
+  }
+  return(result)
 }
 
 
