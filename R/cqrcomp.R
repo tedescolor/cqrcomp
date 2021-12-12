@@ -139,10 +139,7 @@ cqrcomp = function(df1, #first dataset as dataframe
   if(paired & n1!=n2){
     stop("Paired samples with different sizes")
   }
-  if( !( test.type %in% c('norm2', 'normInf','bonf')) ){
-    stop("Not valid test method.")
-  }
-  if(test.type == "bonf" & is.null(cov.names)){
+  if( "bonf" %in% test.type & is.null(cov.names)){
     stop("Use norm2 and not bonf if cov.names = NULL")
   }
   measurevar <- "survival::Surv(get(time.name),get(delta.name))"
