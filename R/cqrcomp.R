@@ -191,7 +191,7 @@ cqrcomp = function(df1, #first dataset as dataframe
   }else{ mboot <- n}
   
   for(i in 1:R){
-    if(dependent){
+    if(paired){
       if(bmethod == "jack"){
         bsample1 = sample(1:n, mboot)
         bsample2 = bsample1
