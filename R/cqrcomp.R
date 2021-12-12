@@ -96,7 +96,7 @@ comp.boot.crq = function (x, y, c, taus, method, ctype = "right", R = 1, mboot,
 #' @param cov.names covariate names in case of conditional comparison
 #' @param delta.name for delta variable (0 censored, 1 uncensored)
 #' @param time.name name of the time variable
-#' @param taus values of the quantiles of interest, over which compare the quantile curves.
+#' @param taus values of the quantiles of interest, over which compare the quantile curves. If NA, the maximum interval will be used with step 0.05, starting from 0.1
 #' @param R number of bootstrap resample
 #' @param verbose print also partial results,
 #' @param method same as crq method, see quantreg
@@ -111,7 +111,7 @@ cqrcomp = function(df1, #first dataset as dataframe
                    cov.names = NULL, #covariate names in case of conditional comparison
                    delta.name = "delta", #name for delta variable (0 censored, 1 uncensored)
                    time.name = "y", #name of the time variable
-                   taus, # values of the quantiles of interest, over which compare the quantile curves.
+                   taus = NA, # values of the quantiles of interest, over which compare the quantile curves. 
                    R=100, #number of boostrap resample
                    verbose = F, #print also partial results,
                    method, # crq method, see quantreg
@@ -119,6 +119,14 @@ cqrcomp = function(df1, #first dataset as dataframe
                    paired=F, #whether the samples are paried
                    test.type = c('norm2', 'normInf','bonf') # type of test among using norm2, normInf or bonferroni correction
 ){
+  if(is.na(taus)){
+    max.quantile = 1- max(
+      sum(df1[,delta.name])/nrow(df1),
+      sum(df2[,delta.name])/nrow(df2)
+      )
+    taus = seq(0.1, max.quantile, by = 0.05)
+  }
+  
   if( !(bmethod %in% c("Bose", "jack", "xy-pair") ) ){
     stop("No valid boostrap method.")
   }
