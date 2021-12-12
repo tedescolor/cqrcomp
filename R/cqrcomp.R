@@ -124,7 +124,12 @@ cqrcomp = function(df1, #first dataset as dataframe
       sum(df1[,delta.name])/nrow(df1),
       sum(df2[,delta.name])/nrow(df2)
       )
+    if(max.quantile<0.15){
+      stop("Censor to high, impossible to continue. Try to specify taus.")
+    }
     taus = seq(0.1, max.quantile, by = 0.05)
+    print("taus = "); print(taus);
+    
   }
   
   if( !(bmethod %in% c("Bose", "jack", "xy-pair") ) ){
