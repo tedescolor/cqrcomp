@@ -120,7 +120,7 @@ cqrcomp = function(df1, #first dataset as dataframe
                    test.type = c('norm2', 'normInf','bonf') # type of test among using norm2, normInf or bonferroni correction
 ){
   if(is.na(taus)){
-    max.quantile = 1- max(
+    max.quantile = max(
       sum(df1[,delta.name])/nrow(df1),
       sum(df2[,delta.name])/nrow(df2)
       )
