@@ -61,10 +61,10 @@ comp.boot.crq = function (x, y, c, taus, method, ctype = "right", R = 1, mboot,
     }
     else stop("invalid bmethod for boot.crq")
     if (method == "Portnoy") 
-      a <- crq.fit.por(xb, yb, cb, weights = w, ctype = ctype, 
+      a <- quantreg::crq.fit.por(xb, yb, cb, weights = w, ctype = ctype, 
                        ...)
     else if (method == "PengHuang") 
-      a <- crq.fit.pen(xb, yb, cb, weights = w, ctype = ctype,...)
+      a <- quantreg::crq.fit.pen(xb, yb, cb, weights = w, ctype = ctype,...)
     else stop("Invalid method for boot.crq")
     if ((i%%floor(R/10)) == 0 & n > 1e+05) 
       cat(paste("bootstrap roughly ", 100 * (i/R), " percent complete\n"))
