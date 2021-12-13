@@ -123,7 +123,7 @@ cqrcomp = function(df1, #first dataset as dataframe
     max.quantile = min(
       sum(df1[,c(delta.name)])/nrow(df1),
       sum(df2[,c(delta.name)])/nrow(df2)
-      )
+    )
     if(max.quantile<0.1){
       stop("Censor to high, impossible to continue. Try to specify taus.")
     }
@@ -244,14 +244,18 @@ cqrcomp = function(df1, #first dataset as dataframe
     pvalues = c()
     for(i in 1:(length(cov.names)+1)){
       if(length(taus) == 1){
-        pvalue =  1 - sum( apply(
+        bvalues = apply(
           array( (A1-A2-(t1-t2))[i,,], dim = c(1,dim(A1)[2:3])), 3,
-          Tstat, taus = TstatTaus,selectedNorm = "norm2" ) < Tstat( (t1-t2)[i],taus = TstatTaus, selectedNorm = "norm2" ) ) / R
+          Tstat, taus = TstatTaus,selectedNorm = "norm2" )
+        bvalues = bvalues[!is.na(bvalues)]
+        pvalue =  sum(  bvalues< Tstat( (t1-t2)[i],taus = TstatTaus, selectedNorm = "norm2" ) ) / length(bvalues)
         pvalues = c(pvalues, pvalue)
       }else{
-        pvalue =  1 - sum( apply(
+        bvalues =  apply(
           array( (array(A1-A2, dim = dim(A1)) - array(rep((t1-t2),R),dim = c(dim(t1),R) ))[i,,], dim = c(1,dim(A1)[2:3])), 3,
-          Tstat, taus = TstatTaus,selectedNorm = "norm2" ) < Tstat( (t1-t2)[i,],taus = TstatTaus, selectedNorm = "norm2" ) ) / R
+          Tstat, taus = TstatTaus,selectedNorm = "norm2" ) 
+        bvalues = bvalues[!is.na(bvalues)]
+        pvalue =  sum(bvalues< Tstat( (t1-t2)[i,],taus = TstatTaus, selectedNorm = "norm2" ) ) / length(bvalues)
         pvalues = c(pvalues, pvalue)
       }
       
@@ -260,15 +264,18 @@ cqrcomp = function(df1, #first dataset as dataframe
     result = c(result, list(bonf = pvalue))
   }
   if("norm2" %in% test.type){
-    pvalue = 1 - sum( apply( (array(A1-A2, dim = dim(A1)) - array(rep((t1-t2),R),dim = c(dim(t1),R) )) , length(dim(A1)),Tstat, taus = TstatTaus,selectedNorm = "norm2" ) < Tstat(t1-t2,taus = TstatTaus, selectedNorm = "norm2" ) ) / R
+    bvalues = apply( (array(A1-A2, dim = dim(A1)) - array(rep((t1-t2),R),dim = c(dim(t1),R) )) , length(dim(A1)),Tstat, taus = TstatTaus,selectedNorm = "norm2" )
+    bvalues = bvalues[!is.na(bvalues)]
+    pvalue = sum( bvalues <  Tstat(t1-t2,taus = TstatTaus, selectedNorm = "norm2" ) ) / length(bvalues)
     result = c(result, list(norm2 = pvalue))
   }
   if("normInf" %in% test.type){
-    pvalue = 1 - sum( apply( (array(A1-A2, dim = dim(A1)) - array(rep((t1-t2),R),dim = c(dim(t1),R) )) , length(dim(A1)),Tstat, taus = TstatTaus,selectedNorm = "normInf" ) < Tstat(t1-t2,taus = TstatTaus, selectedNorm = "normInf" ) ) / R
+    bvalues =  apply( (array(A1-A2, dim = dim(A1)) - array(rep((t1-t2),R),dim = c(dim(t1),R) )) , length(dim(A1)),Tstat, taus = TstatTaus,selectedNorm = "normInf" )
+    bvalues = bvalues[!is.na(bvalues)]
+    pvalue = sum(bvalues< Tstat(t1-t2,taus = TstatTaus, selectedNorm = "normInf" ) ) / length(bvalues)
     result = c(result, list( normInf = pvalue))
   }
   return(result)
 }
-
 
 
